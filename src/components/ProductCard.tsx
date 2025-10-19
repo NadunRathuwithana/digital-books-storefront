@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Star, Plus, ShoppingCart } from "lucide-react";
+import { Star, Plus } from "lucide-react";
 import { Book, getFinalPrice } from "@/data/books";
 import { useAppDispatch } from "@/lib/hooks";
+import { slugify } from "@/lib/utils";
 import { addItem, openCart } from "@/lib/features/cart/cartSlice";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,10 +15,9 @@ import { useState } from "react";
 
 interface ProductCardProps {
   book: Book;
-  index: number;
 }
 
-export default function ProductCard({ book, index }: ProductCardProps) {
+export default function ProductCard({ book }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const [isAdding, setIsAdding] = useState(false);
   const router = useRouter();
@@ -81,7 +80,7 @@ export default function ProductCard({ book, index }: ProductCardProps) {
       <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-xl">
         <div
           className="relative cursor-pointer"
-          onClick={() => router.push(`/products/${book.id}`)}
+          onClick={() => router.push(`/products/${slugify(book.title)}`)}
         >
           <Image
             src={book.coverImage}
@@ -107,7 +106,7 @@ export default function ProductCard({ book, index }: ProductCardProps) {
 
           <h3
             className="font-semibold text-lg text-foreground mb-1 line-clamp-2 hover:text-primary transition-colors cursor-pointer"
-            onClick={() => router.push(`/products/${book.id}`)}
+            onClick={() => router.push(`/products/${slugify(book.title)}`)}
           >
             {book.title}
           </h3>

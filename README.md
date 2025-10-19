@@ -1,25 +1,26 @@
 # Digital Books Storefront
 
-A modern e-commerce platform for selling digital books, built with Next.js, TypeScript, and Tailwind CSS.
+A modern e-commerce storefront for digital books built with Next.js, TypeScript, Tailwind CSS, shadcn/ui, Redux Toolkit, and Framer Motion.
 
 ## Features
 
-- **Product Catalog**: Browse a curated collection of digital books with beautiful cover images
-- **Product Details**: View detailed information about each book including description, ratings, and specifications
-- **Shopping Cart**: Add, remove, and update quantities of books in your cart
-- **Persistent Cart**: Cart contents are saved in localStorage and persist between page reloads
-- **Responsive Design**: Optimized for both mobile and desktop devices
-- **Dark Mode Support**: Automatic dark/light mode based on system preferences
-- **Price Calculations**: Automatic discount calculations and total price computation
+- **Product catalog**: Grid of books with cover, title, author, price, rating
+- **Product details (slug routes)**: `/products/<slug>` with compact mobile-first UI
+- **Mini cart (side drawer)**: Quick view/update with smooth animations
+- **Cart page**: Update quantities, remove items, subtotal, clear cart
+- **Persistent cart**: Saved to `localStorage` (survives refresh)
+- **Responsive design**: Mobile-first; sticky mobile add-to-cart on product page
+- **Price calculations**: Discount + final price shown consistently
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: Zustand with localStorage persistence
-- **UI Components**: Custom React components
-- **Images**: Next.js Image optimization
+- **Styling**: Tailwind CSS (v4 syntax in globals), shadcn/ui components
+- **State**: Redux Toolkit with `localStorage` persistence
+- **Animations**: Framer Motion
+- **Icons**: lucide-react
+- **Images**: Next.js Image (remote: `images.unsplash.com`, `picsum.photos`)
 
 ## Getting Started
 
@@ -35,38 +36,40 @@ npm install
 npm run dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
+3. Open the URL printed by Next.js (often `http://localhost:3001` if 3000 is busy)
 
 ## Project Structure
 
 ```
 src/
-├── app/                 # Next.js app directory
-│   ├── layout.tsx      # Root layout
-│   ├── page.tsx        # Home page
-│   └── globals.css     # Global styles
-├── components/         # React components
-│   ├── Header.tsx      # Site header with cart
-│   ├── ProductCard.tsx # Individual book card
-│   ├── ProductCatalog.tsx # Book grid layout
-│   ├── ProductDetailModal.tsx # Book detail modal
-│   └── ShoppingCart.tsx # Shopping cart modal
-├── data/              # Static data
-│   └── books.ts       # Book catalog data
-└── lib/               # Utilities
-    └── cart-store.ts  # Zustand cart store
+├── app/
+│   ├── layout.tsx            # Root layout (Header, SideCart, Footer)
+│   ├── page.tsx              # Home page (catalog)
+│   ├── cart/page.tsx         # Full cart page
+│   ├── products/[slug]/page.tsx # Product details by slug
+│   └── globals.css           # Global styles
+├── components/
+│   ├── Header.tsx            # Sticky header with cart badge
+│   ├── SideCart.tsx          # Mini cart (drawer)
+│   ├── ProductCatalog.tsx    # Catalog grid
+│   └── ProductCard.tsx       # Book card
+├── data/
+│   └── books.ts              # Book dataset (single-line entries)
+└── lib/
+    ├── store.ts              # Redux store with persistence
+    ├── features/cart/cartSlice.ts # Cart slice (add/remove/update)
+    ├── hooks.ts              # Typed Redux hooks
+    └── utils.ts              # `cn` and `slugify`
 ```
 
-## Features Implemented
+## Implemented
 
-✅ **Product Catalog**: Grid layout displaying books with cover images, titles, authors, and prices
-✅ **Product Details**: Modal with comprehensive book information
-✅ **Add to Cart**: Add books to shopping cart with quantity selection
-✅ **Cart Management**: View, update quantities, and remove items from cart
-✅ **Price Calculations**: Discount calculations and total price display
-✅ **Responsive Design**: Mobile-first design that works on all screen sizes
-✅ **Cart Persistence**: Cart state saved in localStorage
-✅ **Modern UI**: Clean, professional design with hover effects and animations
+✅ Catalog grid with ratings/discounts
+✅ Product details via slug with sticky mobile add-to-cart bar
+✅ Mini cart (drawer) and full cart page
+✅ Quantity updates, remove, clear cart
+✅ `localStorage` persistence
+✅ Responsive, modern UI with shadcn/ui and Framer Motion
 
 ## Bonus Features
 
@@ -84,15 +87,19 @@ src/
 - Safari (latest)
 - Edge (latest)
 
-## Development
+## Development Notes
 
-The project uses modern React patterns including:
+- Functional components with hooks (client components where needed)
+- Redux Toolkit for state management
+- Tailwind CSS + shadcn/ui for consistent, accessible UI
+- Framer Motion for subtle animations
+- Slug routing helper `slugify(title)` keeps links and lookup in sync
 
-- Functional components with hooks
-- TypeScript for type safety
-- Zustand for state management
-- Tailwind CSS for styling
-- Next.js Image optimization
+### Routing
+
+- Home: `/`
+- Product: `/products/<slug>` (e.g., `/products/the-art-of-focus`)
+- Cart: `/cart`
 
 ## License
 

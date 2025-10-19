@@ -9,24 +9,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { books, getFinalPrice, Book } from "@/data/books";
+import { slugify } from "@/lib/utils";
 import { useAppDispatch } from "@/lib/hooks";
 import { addItem, openCart } from "@/lib/features/cart/cartSlice";
 
 export default function ProductDetailPage() {
-  const params = useParams();
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug;
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [book, setBook] = useState<Book | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
-  // Find the book
+  // Find the book by slug from title
   useEffect(() => {
-    const foundBook = books.find((b) => b.id === params.id);
+    const foundBook = books.find((b) => slugify(b.title) === slug);
     if (foundBook) {
       setBook(foundBook);
     }
-  }, [params.id]);
+  }, [slug]);
 
   // If the book is not found, show a message
   if (!book) {
@@ -93,33 +95,33 @@ export default function ProductDetailPage() {
 
   // Render the product detail page
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
+          transition={{ duration: 0.3 }}
+          className="mb-4 md:mb-8"
         >
           <Button
             variant="ghost"
             onClick={() => router.push("/")}
-            className="mb-6"
+            className="mb-0 md:mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Store
           </Button>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
           {/* Image Section */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.3, delay: 0.05 }}
             className="relative"
           >
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden rounded-xl shadow-sm">
               <CardContent className="p-0">
                 <div className="relative">
                   <Image
@@ -127,10 +129,10 @@ export default function ProductDetailPage() {
                     alt={book.title}
                     width={600}
                     height={800}
-                    className="w-full h-[600px] object-cover"
+                    className="w-full h-[320px] sm:h-[380px] md:h-[560px] object-cover"
                   />
                   {book.discount > 0 && (
-                    <Badge className="absolute top-4 right-4 bg-red-500 text-white text-lg font-bold px-3 py-2">
+                    <Badge className="absolute top-3 right-3 bg-red-500 text-white text-xs md:text-sm font-bold px-2 py-1 md:px-3 md:py-2">
                       -{discountPercentage}%
                     </Badge>
                   )}
@@ -143,59 +145,44 @@ export default function ProductDetailPage() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-6"
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="space-y-4 md:space-y-6"
           >
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-2 md:mb-4">
               {renderStars(book.rating)}
-              <span className="text-lg text-muted-foreground">
+              <span className="text-sm md:text-lg text-muted-foreground">
                 ({book.rating})
               </span>
             </div>
 
-            <h1 className="text-4xl font-bold text-foreground">{book.title}</h1>
+            <h1 className="text-2xl md:text-4xl font-bold text-foreground leading-tight">
+              {book.title}
+            </h1>
 
-            <p className="text-xl text-muted-foreground">by {book.author}</p>
+            <p className="text-base md:text-xl text-muted-foreground">
+              by {book.author}
+            </p>
 
-            <div className="flex items-center gap-4">
-              <span className="text-4xl font-bold text-foreground">
+            <div className="flex items-center gap-3 md:gap-4">
+              <span className="text-2xl md:text-4xl font-bold text-foreground">
                 ${finalPrice.toFixed(2)}
               </span>
               {book.discount > 0 && (
-                <span className="text-2xl text-muted-foreground line-through">
+                <span className="text-sm md:text-2xl text-muted-foreground line-through">
                   ${book.price.toFixed(2)}
                 </span>
               )}
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground">Genre:</span>
-                <Badge variant="secondary">{book.genre}</Badge>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground">Pages:</span>
-                <span className="text-muted-foreground">{book.pages}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground">Language:</span>
-                <span className="text-muted-foreground">{book.language}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground">Format:</span>
-                <span className="text-muted-foreground">{book.format}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground">
-                  Release Date:
-                </span>
-                <span className="text-muted-foreground">
-                  {new Date(book.releaseDate).toLocaleDateString()}
-                </span>
+            <div className="space-y-2 md:space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">Genre: {book.genre}</Badge>
+                <Badge variant="secondary">Pages: {book.pages}</Badge>
+                <Badge variant="secondary">Lang: {book.language}</Badge>
+                <Badge variant="secondary">Format: {book.format}</Badge>
+                <Badge variant="secondary">
+                  Released: {new Date(book.releaseDate).toLocaleDateString()}
+                </Badge>
               </div>
             </div>
 
@@ -203,12 +190,12 @@ export default function ProductDetailPage() {
               <h3 className="font-semibold text-foreground mb-2">
                 Description
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
                 {book.description}
               </p>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
               <label className="font-semibold text-foreground">Quantity:</label>
               <div className="flex items-center border border-border rounded-md">
                 <Button
@@ -219,7 +206,7 @@ export default function ProductDetailPage() {
                 >
                   <Minus className="w-4 h-4" />
                 </Button>
-                <span className="px-4 py-2 border-x border-border min-w-[60px] text-center">
+                <span className="px-3 md:px-4 py-2 border-x border-border min-w-[56px] md:min-w-[60px] text-center text-sm md:text-base">
                   {quantity}
                 </span>
                 <Button
@@ -233,26 +220,48 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            <Button
-              onClick={handleAddToCart}
-              disabled={isAdding}
-              size="lg"
-              className="w-full"
-            >
-              {isAdding ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Adding to Cart...
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add {quantity} to Cart - ${(finalPrice * quantity).toFixed(2)}
-                </>
-              )}
-            </Button>
+            <div className="hidden md:block">
+              <Button
+                onClick={handleAddToCart}
+                disabled={isAdding}
+                size="lg"
+                className="w-full"
+              >
+                {isAdding ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                    Adding to Cart...
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                    Add {quantity} to Cart - $
+                    {(finalPrice * quantity).toFixed(2)}
+                  </>
+                )}
+              </Button>
+            </div>
           </motion.div>
         </div>
+      </div>
+
+      {/* Mobile sticky add-to-cart bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white/90 backdrop-blur px-4 py-3 flex items-center justify-between gap-3">
+        <div className="flex items-baseline gap-2">
+          <span className="text-lg font-bold">${finalPrice.toFixed(2)}</span>
+          {book.discount > 0 && (
+            <span className="text-sm text-muted-foreground line-through">
+              ${book.price.toFixed(2)}
+            </span>
+          )}
+        </div>
+        <Button
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          className="flex-1"
+        >
+          {isAdding ? "Adding..." : `Add ${quantity} to Cart`}
+        </Button>
       </div>
     </div>
   );

@@ -1,12 +1,12 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X, Plus, Minus, ShoppingCart, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   closeCart,
@@ -18,8 +18,10 @@ import { getFinalPrice } from "@/data/books";
 
 // Calculate total price
 export default function SideCart() {
+  const [mounted, setMounted] = useState(false);
   const dispatch = useAppDispatch();
   const { items, isOpen } = useAppSelector((state) => state.cart);
+  useEffect(() => setMounted(true), []);
 
   const totalPrice = items.reduce((total, item) => {
     const finalPrice = getFinalPrice(item.book.price, item.book.discount);

@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import cartReducer from "./features/cart/cartSlice";
 
 const STORAGE_KEY = "cart-state-v1";
@@ -14,11 +14,17 @@ function loadState() {
   }
 }
 
+const rootReducer = combineReducers({
+  cart: cartReducer,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+const preloaded = loadState() as Partial<RootState> | undefined;
+
 export const store = configureStore({
-  reducer: {
-    cart: cartReducer,
-  },
-  preloadedState: loadState(),
+  reducer: rootReducer,
+  preloadedState: preloaded,
 });
 
 // Persist to localStorage on changes (browser only)
@@ -36,5 +42,4 @@ if (typeof window !== "undefined") {
   });
 }
 
-export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

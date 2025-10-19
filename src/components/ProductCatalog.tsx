@@ -16,8 +16,8 @@ export default function ProductCatalog({ books }: ProductCatalogProps) {
       transition={{ duration: 0.5 }}
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
     >
-      {books.map((book, index) => (
-        <ProductCard key={book.id} book={book} index={index} />
+      {books.map((book) => (
+        <ProductCard key={book.id} book={book} />
       ))}
     </motion.div>
   );
