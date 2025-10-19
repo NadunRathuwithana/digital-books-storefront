@@ -38,13 +38,13 @@ export default function Header() {
             className="flex items-center gap-2"
           >
             <Link href="/" className="flex items-center gap-2">
-              <Image
+              {/* <Image
                 src="/images/logo.png"
                 className="w-8 h-8"
                 alt="Digital Books"
                 width={100}
                 height={100}
-              />
+              /> */}
               <h1 className="text-xl font-bold text-foreground">
                 Digital Books
               </h1>
